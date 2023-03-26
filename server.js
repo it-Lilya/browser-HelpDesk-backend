@@ -79,6 +79,27 @@ app.use(async (ctx, next) => {
 });
 
 
+app.use(async (ctx, next) => {  
+    if (ctx.request.method !== 'PUT') {
+        next();
+        return;
+      }  
+
+    const indx = +/\d+/.exec(ctx.request.url);
+
+    ctx.response.set('Access-Control-Allow-Origin', '*');
+    const { name, description } = JSON.parse(ctx.request.body);
+    tickets.some(el => {
+      if (el.id === indx) {
+        el.name = name;
+        el.description = description;
+        console.log(el)
+      }
+    })
+    next();
+});
+
+
 
 const server = http.createServer(app.callback());
 
